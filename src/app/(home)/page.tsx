@@ -1,7 +1,13 @@
-import React from 'react'
+import HomeHero from "@/components/home-hero";
+import HomeNavbar from "@/components/home-navbar";
 
 export default function HomePage() {
   return (
-    <div className='text-2xl text-red-700'>HomePage</div>
-  )
+    <>
+      <div>
+        <HomeNavbar />
+        <HomeHero />
+      </div>
+    </>
+  );
 }
