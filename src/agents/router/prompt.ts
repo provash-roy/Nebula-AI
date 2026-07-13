@@ -73,8 +73,4 @@ chat
 Return only:
 chat | search | coding | image
 
-User message:
-${agentState.prompt}
-
-
 `;

@@ -4,7 +4,17 @@ import { routerPrompt } from "./prompt";
 export const routerAgent = async (state) => {
   const llm = await getModel("router");
 
-  const response = await llm.invoke(routerPrompt);
+  const response = await llm.invoke([
+    {
+      role: "system",
+      content: routerPrompt,
+    },
+    {
+      role: "user",
+      content: state.prompt,
+    },
+  ]);
+
   console.log(response);
 
   return {
