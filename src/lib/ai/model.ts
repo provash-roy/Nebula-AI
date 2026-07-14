@@ -10,7 +10,7 @@ const groq = new ChatGroq({
 
 const gemini = new ChatGoogle("gemini-2.5-flash");
 
-export const getModel = async (agent) => {
+export const getModel = async (agent: string) => {
   if (agent === "coding") return gemini;
 
   return groq;

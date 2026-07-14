@@ -1,11 +1,21 @@
 import { getModel } from "@/lib/ai/model";
+import { AgentState } from "../shared/state";
 
-export const chatAgent = async (state) => {
-  const llm = getModel("chat");
 
-  const systemPrompt = `You are Nebula AI. an intelligent AI assistant.`;
+export const chatAgent = async (state: AgentState) => {
+  const llm = await getModel("chat");
 
-  const response = (await llm).invoke([
+  const systemPrompt = `
+You are Nebula AI, an intelligent AI assistant.
+
+Your responsibilities:
+- Answer user questions clearly.
+- Provide accurate and helpful responses.
+- Explain concepts in a simple way.
+- Be friendly and professional.
+`;
+
+  const response = await llm.invoke([
     {
       role: "system",
       content: systemPrompt,
@@ -18,6 +28,6 @@ export const chatAgent = async (state) => {
 
   return {
     ...state,
-    aiResponse: response.content,
+    aiResponse: response.content.toString(),
   };
 };

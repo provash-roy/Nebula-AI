@@ -5,7 +5,7 @@
 
 generator client {
   provider = "prisma-client"
-  output   = "../app/generated/prisma"
+  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -13,9 +13,14 @@ datasource db {
 }
 
 
+enum Role {
+  USER
+  AI
+}
+
 model Conversation {
   id        String   @id @default(cuid())
-  title     String
+  title     String?
   userId    String
 
   createdAt DateTime @default(now())
@@ -26,12 +31,11 @@ model Conversation {
 
 model Message {
   id        String   @id @default(cuid())
-  conversationId    String
-
-  role      String
+  role      Role
   content   String   @db.Text
 
   createdAt DateTime @default(now())
-
+  
+  conversationId    String
   conversation       Conversation @relation(fields: [ conversationId], references: [id])
 }

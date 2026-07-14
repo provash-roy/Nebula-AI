@@ -1,5 +1,3 @@
-import { agentState } from "../shared/state";
-
 export const routerPrompt = `
 You are an intelligent AI router.
 
@@ -72,5 +70,4 @@ chat
 
 Return only:
 chat | search | coding | image
-
 `;
