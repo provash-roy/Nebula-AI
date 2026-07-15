@@ -31,7 +31,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-900">
+    <div className="min-h-screen flex items-center justify-center bg-[#0d0f14] ">
       <div className="w-full max-w-3xl space-y-4 p-6">
         <div className="bg-gray-800/40 p-4 rounded-lg min-h-25 text-white">
           {prompt}

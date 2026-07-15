@@ -4,7 +4,7 @@ import { SidebarTrigger } from "../ui/sidebar";
 
 export default function Navbar() {
   return (
-    <header className="flex  items-center justify-between p-4 h-16">
+    <header className="flex  items-center  bg-[#0d0f14] border-b  border-white/8 justify-between p-4 h-16">
       <SidebarTrigger />
       {/* <Show when="signed-out">
         <SignInButton />
