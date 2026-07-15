@@ -8,6 +8,7 @@ import { Button } from "../ui/button";
 import { BookOpen, MessageSquare } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { getConversation } from "@/app/actions/get-conversation";
+import SidebarContentClient from "./sidebar-content-client";
 
 export async function AppSidebar() {
   const conversations = await getConversation();
@@ -22,26 +23,7 @@ export async function AppSidebar() {
       </SidebarHeader>
 
       <SidebarContent className="mt-4">
-        <Button className="w-full bg-indigo-600">New Chat</Button>
-
-        <Separator />
-
-        <div className="flex gap-2">
-          <MessageSquare />
-          <h2>Recent Chats</h2>
-        </div>
-
-        <div className="space-y-2">
-          {conversations.map((conversation) => (
-            <Button
-              key={conversation.id}
-              variant="ghost"
-              className="w-full justify-start"
-            >
-              {conversation.title}
-            </Button>
-          ))}
-        </div>
+        <SidebarContentClient conversations={conversations} />
       </SidebarContent>
 
       <SidebarFooter />
