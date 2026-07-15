@@ -17,6 +17,12 @@ export async function POST(req: Request) {
       return new Response("Unauthorized", { status: 401 });
     }
 
+    if (!prompt) {
+      return NextResponse.json(
+        { message: "Prompt is required" },
+        { status: 400 },
+      );
+    }
     let convoId = conversationId;
     let isNewConversation = false;
 

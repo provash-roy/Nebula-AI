@@ -19,7 +19,6 @@ export default function Home() {
 
       const res = await axios.post("/api/chat", {
         prompt,
-        conversationId: "demo_1",
       });
 
       setResponse(res.data.response);
@@ -34,6 +33,9 @@ export default function Home() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-900">
       <div className="w-full max-w-3xl space-y-4 p-6">
+        <div className="bg-gray-800/40 p-4 rounded-lg min-h-25 text-white">
+          {prompt}
+        </div>
         {/* Response */}
         <div className="bg-gray-800/40 p-4 rounded-lg min-h-25 text-white">
           {response || "Ask something..."}
