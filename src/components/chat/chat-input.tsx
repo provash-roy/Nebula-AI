@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Mic, Paperclip, Send } from "lucide-react";
 import { Button } from "../ui/button";
 import axios from "axios";
+import { useChatStore } from "@/store/useChatStore";
 
 export default function ChatInput() {
   const router = useRouter();
@@ -12,14 +13,25 @@ export default function ChatInput() {
   const [prompt, setPrompt] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSend = async () => {
-    if (loading) return;
+  const { conversationId, addMessage, setConversationId } = useChatStore();
 
+  const handleSend = async () => {
     const message = prompt.trim();
     if (!message) return;
 
     try {
-      setLoading(true);
+      addMessage({
+        id: crypto.randomUUID(),
+        role: "USER",
+        content: prompt,
+      });
+
+      addMessage({
+        id: crypto.randomUUID(),
+        role: "AI",
+        content: "",
+        loading: true,
+      });
 
       const res = await axios.post("/api/chat", {
         prompt: message,
@@ -27,17 +39,15 @@ export default function ChatInput() {
 
       setPrompt("");
 
-      router.push(`/c/${res.data.conversationId}`);
+      if (!conversationId) {
+        setConversationId(res.data.conversationId);
+
+        router.replace(`/c/${res.data.conversationId}`);
+      }
     } catch (error) {
       console.error(error);
     } finally {
       setLoading(false);
-    }
-  };
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
     }
   };
 
@@ -50,9 +60,8 @@ export default function ChatInput() {
             value={prompt}
             disabled={loading}
             onChange={(e) => setPrompt(e.target.value)}
-            onKeyDown={handleKeyDown}
             placeholder="Ask anything..."
-            className="max-h-40 min-h-12 w-full resize-none bg-transparent px-2 py-2 text-slate-200 outline-none [scrollbar-width:none] placeholder:text-zinc-500"
+            className="max-h-40 min-h-12 w-full resize-none bg-transparent px-2 py-2 text-slate-200 outline-none scrollbar:none] placeholder:text-zinc-500"
           />
 
           <div className="mt-2 flex items-center justify-between">

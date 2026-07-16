@@ -1,19 +1,11 @@
 "use client";
 
-import { Role } from "../../../generated/prisma/enums";
+import { useChatStore } from "@/store/useChatStore";
 import MessageBubble from "./message-bubble";
 
-type Message = {
-  id: string;
-  role: Role;
-  content: string;
-};
+export default function MessageList() {
+  const messages = useChatStore((state) => state.messages);
 
-interface Props {
-  messages: Message[];
-}
-
-export default function MessageList({ messages }: Props) {
   return (
     <div className="flex-1 overflow-y-auto">
       {messages.map((message) => (
@@ -21,6 +13,7 @@ export default function MessageList({ messages }: Props) {
           key={message.id}
           role={message.role}
           content={message.content}
+          loading={message.loading ?? false}
         />
       ))}
     </div>

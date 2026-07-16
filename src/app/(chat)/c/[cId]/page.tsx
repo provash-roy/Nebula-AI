@@ -1,6 +1,5 @@
 import { getConversationById } from "@/app/actions/get-conversation";
-import ChatInput from "@/components/conversation/chat-input";
-import MessageList from "@/components/conversation/message-list";
+import Chat from "@/components/chat/chat";
 
 interface ConversationPageProps {
   params: Promise<{
@@ -13,11 +12,10 @@ export default async function ConversationIdPage({
   const { conversationId } = await params;
 
   const conversation = await getConversationById(conversationId);
-  console.log(conversation?.messages ?? []);
-  return (
-    <div className="flex min-h-screen flex-col">
-      <MessageList messages={conversation?.messages ?? []} />
-      <ChatInput />
-    </div>
-  );
+
+  if (!conversation) {
+    return null;
+  }
+
+  return <Chat conversation={conversation} />;
 }
