@@ -26,7 +26,10 @@ export default function SidebarContentClient({ conversations }: Props) {
 
   return (
     <>
-      <Button className="w-full bg-linear-to-r from-indigo-500 to-violet-700 hover:opacity-90">
+      <Button
+        asChild
+        className="w-full bg-linear-to-r from-indigo-500 to-violet-700 hover:opacity-90"
+      >
         <Link className="flex gap-2 items-center" href="/">
           <Plus />
           New Chat
@@ -60,27 +63,14 @@ export default function SidebarContentClient({ conversations }: Props) {
               </Link>
 
               <DropdownMenu>
-                <DropdownMenuTrigger>
-                  <button
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
                     onClick={(e) => e.stopPropagation()}
-                    className="
-              absolute
-              right-2
-              top-1/2
-              -translate-y-1/2
-              rounded-md
-              p-1
-              text-slate-400
-              opacity-0
-              transition-opacity
-              group-hover:opacity-100
-              data-[state=open]:opacity-100
-              hover:bg-slate-700
-              hover:text-white
-            "
                   >
                     <MoreHorizontal className="h-4 w-4" />
-                  </button>
+                  </Button>
                 </DropdownMenuTrigger>
 
                 <DropdownMenuContent

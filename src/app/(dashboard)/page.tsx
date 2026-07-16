@@ -5,54 +5,29 @@ import axios from "axios";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useRouter } from "next/navigation";
+import ChatInput from "@/components/conversation/chat-input";
 
 export default function Home() {
-  const [prompt, setPrompt] = useState("");
-  const [response, setResponse] = useState("");
-  const [loading, setLoading] = useState(false);
-
-  const handleSend = async () => {
-    if (!prompt.trim()) return;
-
-    try {
-      setLoading(true);
-
-      const res = await axios.post("/api/chat", {
-        prompt,
-      });
-
-      setResponse(res.data.response);
-      setPrompt("");
-    } catch (error) {
-      console.error("Error:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+ 
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0d0f14] ">
-      <div className="w-full max-w-3xl space-y-4 p-6">
-        <div className="bg-gray-800/40 p-4 rounded-lg min-h-25 text-white">
-          {prompt}
-        </div>
-        {/* Response */}
-        <div className="bg-gray-800/40 p-4 rounded-lg min-h-25 text-white">
-          {response || "Ask something..."}
-        </div>
+    <div className="flex flex-col relative h-full  bg-[#0d0f14]">
+      <div className="mx-auto flex w-full max-w-4xl flex-1 flex-col items-center justify-center space-y-4 p-6">
+        <div className="flex flex-col items-center justify-center gap-2 text-center">
+          <h2 className="font-semibold text-slate-200">Nebula AI</h2>
 
-        {/* Input + Button */}
-        <div className="flex gap-2">
-          <Input
-            placeholder="Type your message..."
-            value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
-          />
+          <p className="font-semibold text-slate-400">How can I help You?</p>
 
-          <Button onClick={handleSend} disabled={loading}>
-            {loading ? "Sending..." : "Send"}
-          </Button>
+          <p className="font-semibold text-slate-600">
+            Ask me anything - code, ideas, explanations or just simple
+            questions.
+          </p>
         </div>
+      </div>
+
+      <div className="mx-auto  w-full max-w-4xl p-6">
+        <ChatInput />
       </div>
     </div>
   );
