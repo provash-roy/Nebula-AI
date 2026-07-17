@@ -35,6 +35,7 @@ export default function ChatInput() {
 
       const res = await axios.post("/api/chat", {
         prompt: message,
+        conversationId,
       });
 
       setPrompt("");

@@ -3,16 +3,19 @@ import Chat from "@/components/chat/chat";
 
 interface ConversationPageProps {
   params: Promise<{
-    conversationId: string;
+    cId: string;
   }>;
 }
 export default async function ConversationIdPage({
   params,
 }: ConversationPageProps) {
-  const { conversationId } = await params;
+  const { cId } = await params;
 
-  const conversation = await getConversationById(conversationId);
+  console.log("Route ID:", cId);
 
+  const conversation = await getConversationById(cId);
+
+  console.log("DB Conversation:", conversation?.id);
   if (!conversation) {
     return null;
   }

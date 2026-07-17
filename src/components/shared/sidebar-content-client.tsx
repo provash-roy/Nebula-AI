@@ -13,93 +13,99 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+interface Conversation {
+  id: string;
+  title: string;
+}
+
 interface Props {
-  conversations: {
-    id: string;
-    title: string;
-  }[];
+  conversations: Conversation[];
 }
 
 export default function SidebarContentClient({ conversations }: Props) {
   const pathname = usePathname();
 
+  const handleRename = (id: string) => {
+    console.log("Rename:", id);
+    // TODO: open rename dialog
+  };
+
+  const handleDelete = (id: string) => {
+    console.log("Delete:", id);
+    // TODO: call API + optimistic UI update
+  };
+
   return (
-    <>
+    <div className="space-y-6">
       {/* New Chat */}
-      <div className="w-full bg-linear-to-r from-indigo-500 to-violet-700 hover:opacity-90 rounded-lg">
-        <Link className="flex gap-2 items-center px-3 py-2 text-white" href="/">
-          <Plus />
-          New Chat
-        </Link>
-      </div>
+      <Link
+        href="/"
+        className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-indigo-500 to-violet-700 px-3 py-2 text-white transition hover:opacity-90"
+      >
+        <Plus className="h-4 w-4" />
+        <span className="text-sm font-medium">New Chat</span>
+      </Link>
 
       {/* Recents */}
-      <div className="mt-6 space-y-2">
+      <div className="space-y-2">
         <h2 className="px-2 text-xs font-semibold uppercase tracking-widest text-slate-500">
           Recents
         </h2>
 
-        {conversations.map((conversation) => {
-          const href = `/c/${conversation.id}`;
-          const isActive = pathname === href;
+        {conversations.length === 0 ? (
+          <p className="px-2 text-sm text-slate-400">No conversations yet</p>
+        ) : (
+          conversations.map((conversation) => {
+            const href = `/c/${conversation.id}`;
+            const isActive = pathname === href;
 
-          return (
-            <div
-              key={conversation.id}
-              className="group relative flex items-center"
-            >
-             
-              <Link
-                href={href}
+            return (
+              <div
+                key={conversation.id}
                 className={cn(
-                  "flex w-full items-center rounded-lg px-3 py-2 pr-10 text-sm transition-colors duration-200",
+                  "flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors duration-200",
                   isActive
-                    ? "bg-slate-800/60 text-white"
+                    ? "bg-slate-800/70 text-white"
                     : "text-slate-300 hover:bg-slate-800/60 hover:text-white",
                 )}
               >
-                <span className="truncate">{conversation.title}</span>
-              </Link>
+                {/* LEFT: Title */}
+                <Link href={href} className="flex-1 truncate">
+                  {conversation.title}
+                </Link>
 
-              {/* Dropdown */}
-              <DropdownMenu>
-                <DropdownMenuTrigger>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={(e) => e.stopPropagation()}
-                    className="absolute right-1 opacity-0 group-hover:opacity-100 transition"
-                  >
+                {/* RIGHT: Dropdown */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger>
                     <MoreHorizontal className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
+                  </DropdownMenuTrigger>
 
-                <DropdownMenuContent
-                  side="right"
-                  align="start"
-                  alignOffset={10}
-                  className="border-white/10 backdrop-blur-sm"
-                >
-                  <DropdownMenuItem
-                    onClick={() => console.log("Rename", conversation.id)}
+                  <DropdownMenuContent
+                    side="right"
+                    align="start"
+                    className="border-white/10 backdrop-blur-md"
                   >
-                    <Pencil className="mr-2 h-4 w-4" />
-                    Rename
-                  </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => handleRename(conversation.id)}
+                    >
+                      <Pencil className="mr-2 h-4 w-4" />
+                      Rename
+                    </DropdownMenuItem>
 
-                  <DropdownMenuItem
-                    onClick={() => console.log("Delete", conversation.id)}
-                    className="text-red-400 focus:text-red-400"
-                  >
-                    <Trash2 className="mr-2 h-4 w-4" />
-                    Delete
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          );
-        })}
+                    <DropdownMenuItem
+                      onClick={() => handleDelete(conversation.id)}
+                      className="text-red-400"
+                    >
+                      <Trash2 className="mr-2 h-4 w-4" />
+                      Delete
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            );
+          })
+        )}
       </div>
-    </>
+    </div>
   );
 }

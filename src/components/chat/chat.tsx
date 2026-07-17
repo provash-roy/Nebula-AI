@@ -7,7 +7,11 @@ import MessageList from "./message-list";
 import ChatInput from "./chat-input";
 import { Message } from "@/types/message";
 
-export default function Chat({ conversation }: { conversation: { id: string; messages:Message[] } }) {
+export default function Chat({
+  conversation,
+}: {
+  conversation: { id: string; messages: Message[] };
+}) {
   const hydrate = useChatStore((state) => state.hydrate);
 
   useEffect(() => {
@@ -16,7 +20,7 @@ export default function Chat({ conversation }: { conversation: { id: string; mes
 
       messages: conversation.messages,
     });
-  }, [conversation, hydrate]);
+  }, [conversation]);
 
   return (
     <div className="flex min-h-screen flex-col">

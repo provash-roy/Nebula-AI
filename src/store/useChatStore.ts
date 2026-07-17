@@ -9,6 +9,7 @@ interface ChatState {
   setConversationId: (id: string) => void;
   addMessage: (message: Message) => void;
   updateAssistant: (text: string) => void;
+
   hydrate: (data: { conversationId: string; messages: Message[] }) => void;
   clear: () => void;
 }
@@ -47,12 +48,15 @@ export const useChatStore = create<ChatState>((set) => ({
       };
     }),
 
-  hydrate: ({ conversationId, messages }) =>
+  hydrate: ({ conversationId, messages }) => {
+    console.log("Hydrate Called");
+    console.log(conversationId);
+    console.log(messages);
     set({
       conversationId,
       messages,
-    }),
-
+    });
+  },
   clear: () =>
     set({
       conversationId: undefined,
