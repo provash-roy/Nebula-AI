@@ -28,3 +28,27 @@ export async function PATCH(
 
   return NextResponse.json(conversation);
 }
+
+export async function DELETE(
+  request: Request,
+  { params }: { params: Promise<{ conversationId: string }> },
+) {
+  const { userId } = await auth();
+
+  if (!userId) {
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+  }
+
+  const { conversationId } = await params;
+
+  await prisma.conversation.delete({
+    where: {
+      id: conversationId,
+      userId,
+    },
+  });
+
+  return NextResponse.json({
+    success: true,
+  });
+}
