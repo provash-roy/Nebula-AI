@@ -1,5 +1,6 @@
 import { getConversationById } from "@/app/actions/get-conversation";
 import Chat from "@/components/chat/chat";
+import MessageList from "@/components/chat/message-list";
 
 interface ConversationPageProps {
   params: Promise<{
@@ -17,5 +18,10 @@ export default async function ConversationIdPage({
     return null;
   }
 
-  return <Chat conversation={conversation} />;
+  return (
+    <div>
+     
+      <Chat conversation={conversation} />
+    </div>
+  );
 }
