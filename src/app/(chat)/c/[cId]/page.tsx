@@ -11,11 +11,8 @@ export default async function ConversationIdPage({
 }: ConversationPageProps) {
   const { cId } = await params;
 
-  console.log("Route ID:", cId);
-
   const conversation = await getConversationById(cId);
 
-  console.log("DB Conversation:", conversation?.id);
   if (!conversation) {
     return null;
   }

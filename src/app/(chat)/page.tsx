@@ -4,15 +4,13 @@ import ChatInput from "@/components/chat/chat-input";
 import MessageList from "@/components/chat/message-list";
 import { useChatStore } from "@/store/useChatStore";
 
-export default function Home() {
+export default function Chat() {
   const clear = useChatStore((state) => state.clear);
   clear();
   return (
     <div className="flex flex-col relative h-full  bg-[#0d0f14]">
-      {/* <div className="mx-auto flex w-full max-w-4xl flex-1 flex-col items-center justify-center space-y-4 p-6">
+      <div className="mx-auto flex w-full max-w-4xl flex-1 flex-col items-center justify-center space-y-4 p-6">
         <div className="flex flex-col items-center justify-center gap-2 text-center">
-          <h2 className="font-semibold text-slate-200">Nebula AI</h2>
-
           <p className="font-semibold text-slate-400">How can I help You?</p>
 
           <p className="font-semibold text-slate-600">
@@ -20,7 +18,7 @@ export default function Home() {
             questions.
           </p>
         </div>
-      </div> */}
+      </div>
       <MessageList />
       <div className="mx-auto  w-full max-w-4xl p-6">
         <ChatInput />

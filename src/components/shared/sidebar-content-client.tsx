@@ -128,7 +128,7 @@ export default function SidebarContentClient({ conversations }: Props) {
       <div className="space-y-6">
         <Link
           href="/"
-          className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-indigo-500 to-violet-700 px-3 py-2 text-white"
+          className="flex items-center gap-2 rounded-lg bg-linear-to-r from-indigo-500 to-violet-700 px-3 py-2 text-white"
         >
           <Plus className="h-4 w-4" />
           <span>New Chat</span>
@@ -157,13 +157,13 @@ export default function SidebarContentClient({ conversations }: Props) {
                 </Link>
 
                 <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
+                  <DropdownMenuTrigger>
                     <Button variant="ghost" size="icon">
                       <MoreHorizontal className="h-4 w-4" />
                     </Button>
                   </DropdownMenuTrigger>
 
-                  <DropdownMenuContent align="end">
+                  <DropdownMenuContent align="end" side="right" sideOffset={8}>
                     <DropdownMenuItem onClick={() => openRename(conversation)}>
                       <Pencil className="mr-2 h-4 w-4" />
                       Rename

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { Loader2, Pencil } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -33,11 +33,13 @@ export default function RenameConversationDialog({
   const [title, setTitle] = useState(currentTitle);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (open) {
+  const handleOpenChange = (value: boolean) => {
+    if (value) {
       setTitle(currentTitle);
     }
-  }, [open, currentTitle]);
+
+    setOpen(value);
+  };
 
   const handleRename = async () => {
     const newTitle = title.trim();
@@ -74,8 +76,8 @@ export default function RenameConversationDialog({
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
+      <DialogTrigger>
         <Button variant="ghost" className="w-full justify-start">
           <Pencil className="mr-2 h-4 w-4" />
           Rename

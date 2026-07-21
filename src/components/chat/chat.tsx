@@ -20,12 +20,11 @@ export default function Chat({
 
       messages: conversation.messages,
     });
-  }, [conversation]);
+  }, [conversation, hydrate]);
 
   return (
     <div className="flex min-h-screen flex-col">
       <MessageList />
-
       <ChatInput />
     </div>
   );

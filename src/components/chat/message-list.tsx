@@ -5,9 +5,8 @@ import MessageBubble from "./message-bubble";
 
 export default function MessageList() {
   const messages = useChatStore((state) => state.messages);
-  console.log("Store Messages:", messages);
   return (
-    <div className="flex-1 overflow-y-auto">
+    <div className="mx-auto max-w-4x flex-1 overflow-y-auto">
       {messages.map((message) => (
         <MessageBubble
           key={message.id}

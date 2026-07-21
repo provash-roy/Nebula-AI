@@ -55,7 +55,7 @@ export default function DeleteConversationDialog({
 
   return (
     <AlertDialog>
-      <AlertDialogTrigger asChild>
+      <AlertDialogTrigger >
         <Button
           variant="ghost"
           className="w-full justify-start text-red-500 hover:text-red-600"

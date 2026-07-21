@@ -11,9 +11,10 @@ export default function ChatLayout({
     <div className="min-h-screen bg-[#0d0f14]  text-white">
       <SidebarProvider>
         <AppSidebar />
-        <main className="flex-1 min-h-screen w-full">
+
+        <main className="flex-1 flex flex-col">
           <Navbar />
-          <div className="p-5">{children}</div>
+          <div className="flex-1 overflow-y-auto pb-40">{children}</div>
         </main>
       </SidebarProvider>
     </div>
