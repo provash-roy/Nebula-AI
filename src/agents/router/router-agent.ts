@@ -2,7 +2,7 @@ import { getModel } from "@/lib/ai/model";
 import { routerPrompt } from "./prompt";
 import { AgentState } from "../shared/state";
 
-export const routerAgent = async (state:AgentState) => {
+export const routerAgent = async (state: AgentState) => {
   const llm = await getModel("router");
 
   const response = await llm.invoke([
@@ -15,8 +15,6 @@ export const routerAgent = async (state:AgentState) => {
       content: state.prompt,
     },
   ]);
-
-  console.log(response);
 
   return {
     ...state,
