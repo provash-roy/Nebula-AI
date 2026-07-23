@@ -17,7 +17,6 @@ export default function Chat({
   useEffect(() => {
     hydrate({
       conversationId: conversation.id,
-
       messages: conversation.messages,
     });
   }, [conversation, hydrate]);

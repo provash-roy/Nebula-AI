@@ -81,7 +81,7 @@ export default function ChatInput() {
             disabled={loading}
             onChange={(e) => setPrompt(e.target.value)}
             placeholder="Ask anything..."
-            className="flex-1 max-h-40 min-h-[40px] resize-none bg-transparent px-2 py-2 text-slate-200 outline-none placeholder:text-zinc-500"
+            className="flex-1 max-h-40 min-h-10 resize-none bg-transparent px-2 py-2 text-slate-200 outline-none placeholder:text-zinc-500"
           />
 
           <Button

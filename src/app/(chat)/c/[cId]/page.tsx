@@ -20,7 +20,6 @@ export default async function ConversationIdPage({
 
   return (
     <div>
-     
       <Chat conversation={conversation} />
     </div>
   );
