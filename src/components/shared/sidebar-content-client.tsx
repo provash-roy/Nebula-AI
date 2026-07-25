@@ -157,10 +157,10 @@ export default function SidebarContentClient({ conversations }: Props) {
                 </Link>
 
                 <DropdownMenu>
-                  <DropdownMenuTrigger>
-                    <Button variant="ghost" size="icon">
-                      <MoreHorizontal className="h-4 w-4" />
-                    </Button>
+                  <DropdownMenuTrigger
+                    render={<Button variant="ghost" size="icon" />}
+                  >
+                    <MoreHorizontal className="h-4 w-4" />
                   </DropdownMenuTrigger>
 
                   <DropdownMenuContent align="end" side="right" sideOffset={8}>

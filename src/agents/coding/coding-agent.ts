@@ -41,6 +41,8 @@ export const codingAgent = async (state: AgentState) => {
       ? intentResponse.content.trim()
       : "";
 
+  console.log(intent);
+
   const selectedPrompt = agentPromptMap[intent as keyof typeof agentPromptMap];
 
   if (!selectedPrompt) {
@@ -51,6 +53,7 @@ export const codingAgent = async (state: AgentState) => {
       intent: "UNKNOWN",
     };
   }
+console.log(selectedPrompt)
 
   const response = await codingLLM.invoke([
     {
@@ -67,6 +70,8 @@ export const codingAgent = async (state: AgentState) => {
     typeof response.content === "string"
       ? response.content
       : JSON.stringify(response.content);
+
+  console.log(aiResponse);
 
   return {
     ...state,

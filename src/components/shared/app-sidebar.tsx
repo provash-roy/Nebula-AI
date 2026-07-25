@@ -4,5 +4,10 @@ import AppSidebarClient from "@/components/shared/app-sidebar-client";
 export async function AppSidebar() {
   const conversations = await getConversation();
 
-  return <AppSidebarClient conversations={conversations} />;
+  const safeConversations = conversations.map((c) => ({
+    ...c,
+    title: c.title ?? "",
+  }));
+
+  return <AppSidebarClient conversations={safeConversations} />;
 }

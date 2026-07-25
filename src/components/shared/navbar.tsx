@@ -1,5 +1,5 @@
 import React from "react";
-import { Show, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
+import { Show, UserButton } from "@clerk/nextjs";
 import { SidebarTrigger } from "../ui/sidebar";
 
 export default function Navbar() {
