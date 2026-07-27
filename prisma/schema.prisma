@@ -88,6 +88,7 @@ model Plan {
 model User {
 
   id                String @id @default(cuid())
+  userId            String @unique
 
 
   name              String?

@@ -112,6 +112,7 @@ export type PlanScalarFieldEnum = (typeof PlanScalarFieldEnum)[keyof typeof Plan
 
 export const UserScalarFieldEnum = {
   id: 'id',
+  userId: 'userId',
   name: 'name',
   email: 'email',
   planId: 'planId',
