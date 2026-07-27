@@ -39,3 +39,27 @@ model Message {
   conversationId    String
   conversation       Conversation @relation(fields: [ conversationId], references: [id])
 }
+
+model Plan {
+
+  id              String @id @default(cuid())
+
+  name            String @unique
+
+  price           Int
+
+  credits         Int
+
+  duration        Int @default(30)
+
+
+  users           User[]
+
+  subscriptions   Subscription[]
+
+
+  createdAt       DateTime @default(now())
+
+  updatedAt       DateTime @updatedAt
+
+}
