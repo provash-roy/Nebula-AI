@@ -10,4 +10,8 @@
  */
 export type * from './models/Conversation'
 export type * from './models/Message'
+export type * from './models/Plan'
+export type * from './models/User'
+export type * from './models/Subscription'
+export type * from './models/Payment'
 export type * from './commonInputTypes'
