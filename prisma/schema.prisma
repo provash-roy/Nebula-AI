@@ -163,4 +163,50 @@ model Subscription {
 
 
 
+model Payment {
+
+  id                String @id @default(cuid())
+
+
+  userId            String
+
+
+  user              User @relation(fields:[userId], references:[id], onDelete:Cascade )
+
+
+
+  stripePaymentId   String @unique
+
+
+  stripeInvoiceId   String?
+
+
+
+  stripeCustomerId  String
+
+
+
+  amount            Int
+
+
+  currency          String @default("usd")
+
+
+
+  status            PaymentStatus
+
+
+  paymentMethod     String?
+
+
+
+  paidAt            DateTime?
+
+
+
+  createdAt         DateTime @default(now())
+
+  updatedAt         DateTime @updatedAt
+
+}
 
