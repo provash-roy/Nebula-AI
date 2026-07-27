@@ -13,6 +13,7 @@ import { BookOpen } from "lucide-react";
 import SidebarContentClient from "./sidebar-content-client";
 import { Conversation } from "@/types/conversation";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 type AppSidebarClientProps = {
   conversations: Conversation[];
@@ -28,6 +29,7 @@ export default function AppSidebarClient({
   currentUser,
 }: AppSidebarClientProps) {
   const { user } = useUser();
+  const router = useRouter();
 
   return (
     <Sidebar className="bg-[#0d0f14] border-white/10 px-4 py-2">
@@ -65,6 +67,7 @@ export default function AppSidebarClient({
             </div>
             <Button
               className="rounded-full border border-white/10 hover:opacity-90"
+              onClick={() => router.push("/pricing")}
             >
               Upgrade
             </Button>
