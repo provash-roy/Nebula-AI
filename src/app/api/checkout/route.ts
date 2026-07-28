@@ -67,6 +67,20 @@ export async function POST(req: Request) {
       },
     });
 
+    await prisma.user.update({
+      where: {
+        userId: userId,
+      },
+
+      data: {
+        planId: plan.id,
+
+        credits: plan.credits,
+
+        totalCredits: plan.credits,
+      },
+    });
+
     return NextResponse.json({
       url: session.url,
     });

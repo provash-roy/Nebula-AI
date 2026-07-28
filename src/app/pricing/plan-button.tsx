@@ -3,11 +3,17 @@
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 
+type Plan = {
+  name: string;
+  popular?: boolean;
+  button: string;
+};
+
 export default function PlanButton({
   plan,
   isCurrent,
 }: {
-  plan: any;
+  plan: Plan;
   isCurrent: boolean;
 }) {
   const handleClick = async () => {
