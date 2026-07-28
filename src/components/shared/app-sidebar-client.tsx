@@ -1,6 +1,12 @@
 "use client";
 
-import { Show, UserButton, useUser } from "@clerk/nextjs";
+import {
+  Show,
+  UserButton,
+  useUser,
+  SignInButton,
+  SignUpButton,
+} from "@clerk/nextjs";
 
 import {
   Sidebar,
@@ -44,10 +50,10 @@ export default function AppSidebarClient({
         <SidebarContentClient conversations={conversations} />
       </SidebarContent>
 
-      <SidebarFooter className=" rounded border border-white/10 bg-white/5">
+      <SidebarFooter className="rounded border border-white/10 bg-white/5 p-3">
         <Show when="signed-in">
           <div className="flex items-center justify-between">
-            <div className="flex gap-2">
+            <div className="flex gap-2 items-center">
               <UserButton
                 appearance={{
                   elements: {
@@ -55,22 +61,44 @@ export default function AppSidebarClient({
                   },
                 }}
               />
+
               <div className="flex flex-col">
                 <span className="text-sm font-medium text-white">
                   {user?.fullName}
                 </span>
 
                 <span className="text-xs text-zinc-400">
-                  {currentUser.plan.name}
+                  {currentUser?.plan?.name}
                 </span>
               </div>
             </div>
+
             <Button
               className="rounded-full border border-white/10 hover:opacity-90"
               onClick={() => router.push("/pricing")}
             >
               Upgrade
             </Button>
+          </div>
+        </Show>
+
+        <Show when="signed-out">
+          <div className="flex items-center justify-between">
+            <SignInButton mode="modal">
+              <Button
+              size='lg'
+                variant="outline"
+                className="rounded border-white/10 text-white hover:bg-white/10"
+              >
+                Sign In
+              </Button>
+            </SignInButton>
+
+            <SignUpButton mode="modal">
+              <Button className=" rounded bg-blue-500 hover:bg-blue-600">
+                Sign Up
+              </Button>
+            </SignUpButton>
           </div>
         </Show>
       </SidebarFooter>

@@ -139,48 +139,64 @@ export default function SidebarContentClient({ conversations }: Props) {
             Recents
           </h2>
 
-          {conversations.map((conversation) => {
-            const href = `/c/${conversation.id}`;
+          {conversations.length > 0 ? (
+            conversations.map((conversation) => {
+              const href = `/c/${conversation.id}`;
 
-            return (
-              <div
-                key={conversation.id}
-                className={cn(
-                  "flex items-center justify-between rounded-lg px-3 py-2",
-                  pathname === href
-                    ? "bg-slate-800 text-white"
-                    : "hover:bg-slate-800/60",
-                )}
-              >
-                <Link href={href} className="flex-1 truncate">
-                  {conversation.title}
-                </Link>
+              return (
+                <div
+                  key={conversation.id}
+                  className={cn(
+                    "flex items-center justify-between rounded-lg px-3 py-2",
+                    pathname === href
+                      ? "bg-slate-800 text-white"
+                      : "hover:bg-slate-800/60",
+                  )}
+                >
+                  <Link href={href} className="flex-1 truncate">
+                    {conversation.title}
+                  </Link>
 
-                <DropdownMenu>
-                  <DropdownMenuTrigger
-                    render={<Button variant="ghost" size="icon" />}
-                  >
-                    <MoreHorizontal className="h-4 w-4" />
-                  </DropdownMenuTrigger>
-
-                  <DropdownMenuContent align="end" side="right" sideOffset={8}>
-                    <DropdownMenuItem onClick={() => openRename(conversation)}>
-                      <Pencil className="mr-2 h-4 w-4" />
-                      Rename
-                    </DropdownMenuItem>
-
-                    <DropdownMenuItem
-                      className="text-red-500"
-                      onClick={() => openDelete(conversation)}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger
+                      render={<Button variant="ghost" size="icon" />}
                     >
-                      <Trash2 className="mr-2 h-4 w-4" />
-                      Delete
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            );
-          })}
+                      <MoreHorizontal className="h-4 w-4" />
+                    </DropdownMenuTrigger>
+
+                    <DropdownMenuContent
+                      align="end"
+                      side="right"
+                      sideOffset={8}
+                    >
+                      <DropdownMenuItem
+                        onClick={() => openRename(conversation)}
+                      >
+                        <Pencil className="mr-2 h-4 w-4" />
+                        Rename
+                      </DropdownMenuItem>
+
+                      <DropdownMenuItem
+                        className="text-red-500"
+                        onClick={() => openDelete(conversation)}
+                      >
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              );
+            })
+          ) : (
+            <div className="flex flex-col items-center justify-center py-8 text-center">
+              <p className="text-sm text-slate-400">No recent conversation</p>
+
+              <p className="mt-1 text-xs text-slate-500">
+                Start a new chat to see it here
+              </p>
+            </div>
+          )}
         </div>
       </div>
 

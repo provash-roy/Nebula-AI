@@ -5,7 +5,7 @@ export const getCurrentUser = async () => {
   const { userId } = await auth();
 
   if (!userId) {
-    throw new Error("Unauthorized");
+    return null;
   }
 
   const user = await prisma.user.findUnique({
@@ -20,7 +20,7 @@ export const getCurrentUser = async () => {
   });
 
   if (!user) {
-    throw new Error("User not found");
+    return null;
   }
 
   return user;

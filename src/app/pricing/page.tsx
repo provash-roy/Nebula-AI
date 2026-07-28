@@ -96,7 +96,7 @@ export default async function PricingPage() {
 
             <PlanButton
               plan={plan}
-              isCurrent={currentUser.plan?.name === plan.name}
+              isCurrent={currentUser?.plan?.name === plan.name}
             />
           </div>
         ))}

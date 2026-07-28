@@ -32,8 +32,6 @@ export async function POST(req: Request) {
       );
     }
 
-
-
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
 
@@ -56,9 +54,9 @@ export async function POST(req: Request) {
         },
       ],
 
-      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard?success=true`,
+      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/success`,
 
-      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/pricing?cancel=true`,
+      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/cancel`,
 
       metadata: {
         userId,

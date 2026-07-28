@@ -20,7 +20,6 @@ export default async function ChatLayout({
         <AppSidebar />
 
         <main className="flex-1 flex flex-col">
-          <Navbar />
           <div className="flex-1 overflow-y-auto pb-40">{children}</div>
         </main>
       </SidebarProvider>
