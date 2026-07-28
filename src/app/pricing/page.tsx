@@ -1,5 +1,6 @@
 import { Check } from "lucide-react";
-import Link from "next/link";
+import { getCurrentUser } from "../actions/get-current-user";
+import PlanButton from "./plan-button";
 
 const plans = [
   {
@@ -33,7 +34,9 @@ const plans = [
   },
 ];
 
-export default function PricingPage() {
+export default async function PricingPage() {
+  const currentUser = await getCurrentUser();
+
   return (
     <div className="min-h-screen bg-zinc-950 px-6 py-20 text-white">
       <div className="mx-auto max-w-3xl text-center">
@@ -42,8 +45,7 @@ export default function PricingPage() {
         </h1>
 
         <p className="mt-4 text-zinc-400">
-          Unlock the power of Nebula AI with flexible plans. Upgrade anytime and
-          scale your creativity.
+          Unlock the power of Nebula AI with flexible plans.
         </p>
       </div>
 
@@ -52,22 +54,21 @@ export default function PricingPage() {
           <div
             key={plan.name}
             className={`
-              relative rounded-2xl border p-8
-              ${
-                plan.popular
-                  ? "border-blue-500 bg-zinc-900 shadow-xl shadow-blue-500/10"
-                  : "border-zinc-800 bg-zinc-950"
-              }
-            `}
+        relative rounded-2xl border p-8
+        ${
+          plan.popular
+            ? "border-blue-500 bg-zinc-900"
+            : "border-zinc-800 bg-zinc-950"
+        }
+        `}
           >
             {plan.popular && (
               <span
                 className="
-                  absolute -top-3 left-1/2 
-                  -translate-x-1/2 rounded-full
-                  bg-blue-500 px-4 py-1
-                  text-xs font-medium
-                "
+            absolute -top-3 left-1/2
+            -translate-x-1/2 rounded-full
+            bg-blue-500 px-4 py-1 text-xs
+            "
               >
                 Most Popular
               </span>
@@ -77,33 +78,15 @@ export default function PricingPage() {
 
             <p className="mt-2 text-sm text-zinc-400">{plan.description}</p>
 
-            <div className="mt-6 flex items-end gap-2">
-              <span className="text-4xl font-bold">{plan.price}</span>
+            <div className="mt-6 text-4xl font-bold">{plan.price}</div>
 
-              {plan.price !== "$0" && (
-                <span className="mb-1 text-zinc-400">/month</span>
-              )}
-            </div>
-
-            <div
-              className="
-              mt-4 rounded-lg 
-              bg-zinc-900 px-4 py-3
-              text-sm text-blue-400
-            "
-            >
+            <div className="mt-4 rounded-lg bg-zinc-900 px-4 py-3 text-blue-400">
               {plan.credits}
             </div>
 
             <ul className="mt-6 space-y-3">
               {plan.features.map((feature) => (
-                <li
-                  key={feature}
-                  className="
-                      flex items-center gap-3
-                      text-sm text-zinc-300
-                    "
-                >
+                <li key={feature} className="flex gap-3 text-sm text-zinc-300">
                   <Check size={18} className="text-green-400" />
 
                   {feature}
@@ -111,23 +94,10 @@ export default function PricingPage() {
               ))}
             </ul>
 
-            <Link
-              href="/dashboard"
-              className={`
-                mt-8 block rounded-xl
-                px-4 py-3 text-center
-                text-sm font-medium
-                transition
-
-                ${
-                  plan.popular
-                    ? "bg-blue-500 hover:bg-blue-600"
-                    : "bg-zinc-800 hover:bg-zinc-700"
-                }
-              `}
-            >
-              {plan.button}
-            </Link>
+            <PlanButton
+              plan={plan}
+              isCurrent={currentUser.plan?.name === plan.name}
+            />
           </div>
         ))}
       </div>
