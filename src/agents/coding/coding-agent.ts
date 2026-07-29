@@ -53,7 +53,6 @@ export const codingAgent = async (state: AgentState) => {
       intent: "UNKNOWN",
     };
   }
-console.log(selectedPrompt)
 
   const response = await codingLLM.invoke([
     {

@@ -1,5 +1,5 @@
 import { auth } from "@clerk/nextjs/server";
-import  prisma  from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 
 export const getConversation = async () => {
   const { userId } = await auth();
@@ -17,6 +17,28 @@ export const getConversation = async () => {
     },
     orderBy: {
       updatedAt: "desc",
+    },
+  });
+};
+
+export const getConversationById = async (conversationId: string) => {
+  const { userId } = await auth();
+
+  if (!userId) {
+    return null;
+  }
+
+  return await prisma.conversation.findUnique({
+    where: {
+      id: conversationId,
+      userId, 
+    },
+    include: {
+      messages: {
+        orderBy: {
+          createdAt: "asc",
+        },
+      },
     },
   });
 };
