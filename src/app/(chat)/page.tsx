@@ -1,12 +1,12 @@
 "use client";
+import { usePathname } from "next/navigation";
+import { useEffect } from "react";
 
 import ChatInput from "@/components/chat/chat-input";
 import MessageList from "@/components/chat/message-list";
-
 import { useChatStore } from "@/store/useChatStore";
 
-import { usePathname } from "next/navigation";
-import { useEffect } from "react";
+
 
 export default function Chat() {
   const pathname = usePathname();

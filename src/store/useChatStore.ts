@@ -49,18 +49,15 @@ export const useChatStore = create<ChatState>((set) => ({
     }),
 
   hydrate: ({ conversationId, messages }) => {
-    console.log("Hydrate Called");
-    console.log(conversationId);
-    console.log(messages);
     set({
       conversationId,
       messages,
     });
   },
+
   clear: () =>
     set({
       conversationId: undefined,
-
       messages: [],
     }),
 }));

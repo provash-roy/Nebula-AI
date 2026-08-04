@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
 import { ClerkProvider } from "@clerk/nextjs";
+ import { dark } from '@clerk/ui/themes'
 import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
@@ -31,7 +32,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#0d0f14] text-white`}
       >
-        <ClerkProvider>
+        <ClerkProvider
+         appearance={{
+     theme: dark,
+   }}>
           {children}
           <Toaster richColors position="top-right" />
         </ClerkProvider>

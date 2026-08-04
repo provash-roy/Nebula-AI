@@ -1,5 +1,5 @@
 import { Check } from "lucide-react";
-import { getCurrentUser } from "../actions/get-current-user";
+import { getCurrentUser } from "../../actions/get-current-user";
 import PlanButton from "./plan-button";
 
 const plans = [

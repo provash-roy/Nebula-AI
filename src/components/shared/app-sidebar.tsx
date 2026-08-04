@@ -1,5 +1,5 @@
-import { getCurrentUser } from "@/app/actions/get-current-user";
-import { getConversation } from "@/app/actions/get-conversation";
+import { getCurrentUser } from "@/actions/get-current-user";
+import { getConversation } from "@/actions/get-conversation";
 import AppSidebarClient from "@/components/shared/app-sidebar-client";
 
 export async function AppSidebar() {

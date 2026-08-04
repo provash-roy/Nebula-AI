@@ -1,4 +1,4 @@
-import { getConversationById } from "@/app/actions/get-conversation";
+import { getConversationById } from "@/actions/get-conversation";
 import Chat from "@/components/chat/chat";
 import MessageList from "@/components/chat/message-list";
 
