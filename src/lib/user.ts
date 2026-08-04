@@ -37,15 +37,10 @@ export async function createUser() {
   const user = await prisma.user.create({
     data: {
       userId,
-
       name: `${clerkUser.firstName ?? ""} ${clerkUser.lastName ?? ""}`.trim(),
-
       email: clerkUser.emailAddresses[0].emailAddress,
-
       planId: freePlan.id,
-
       credits: freePlan.credits,
-
       totalCredits: freePlan.credits,
     },
   });

@@ -25,7 +25,7 @@ export default function MessageBubble({ role, content, loading }: Props) {
               : "bg-zinc-900 text-slate-200 border-zinc-700"
           }
         >
-          <div className="whitespace-pre-wrap break-words">
+          <div className="whitespace-pre-wrap wrap-break-word">
             {content}
             {loading && (
               <span className="ml-2 text-sm text-slate-400">Thinking...</span>

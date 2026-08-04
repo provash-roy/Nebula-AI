@@ -5,12 +5,19 @@ import { Message } from "@/types/message";
 
 interface ChatState {
   conversationId?: string;
+
   messages: Message[];
+
   setConversationId: (id: string) => void;
+
   addMessage: (message: Message) => void;
-  updateAssistant: (text: string) => void;
+
+  addAssistantMessage: () => void;
+
+  appendAssistantChunk: (text: string) => void;
 
   hydrate: (data: { conversationId: string; messages: Message[] }) => void;
+
   clear: () => void;
 }
 
@@ -19,42 +26,64 @@ export const useChatStore = create<ChatState>((set) => ({
 
   messages: [],
 
+  // Set current conversation id
   setConversationId: (id) =>
     set({
       conversationId: id,
     }),
 
+  // Add user message
   addMessage: (message) =>
     set((state) => ({
       messages: [...state.messages, message],
     })),
 
-  updateAssistant: (text) =>
+  // Create empty AI message before streaming
+  addAssistantMessage: () =>
+    set((state) => ({
+      messages: [
+        ...state.messages,
+        {
+          id: crypto.randomUUID(),
+          role: "AI",
+          content: "",
+          loading: true,
+        },
+      ],
+    })),
+
+  // Append streaming AI response chunk
+  appendAssistantChunk: (text) =>
     set((state) => {
       const messages = [...state.messages];
 
-      const last = messages[messages.length - 1];
+      const lastAssistantIndex = messages
+        .map((message) => message.role)
+        .lastIndexOf("AI");
 
-      if (!last) return state;
+      if (lastAssistantIndex === -1) {
+        return state;
+      }
 
-      if (last.role !== "AI") return state;
-
-      last.content += text;
-
-      last.loading = false;
+      messages[lastAssistantIndex] = {
+        ...messages[lastAssistantIndex],
+        content: messages[lastAssistantIndex].content + text,
+        loading: false,
+      };
 
       return {
         messages,
       };
     }),
 
-  hydrate: ({ conversationId, messages }) => {
+  // Hydrate store from server data
+  hydrate: ({ conversationId, messages }) =>
     set({
       conversationId,
       messages,
-    });
-  },
+    }),
 
+  // Clear current chat
   clear: () =>
     set({
       conversationId: undefined,

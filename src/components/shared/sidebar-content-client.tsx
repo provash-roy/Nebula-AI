@@ -4,12 +4,12 @@ import { useState } from "react";
 import Link from "next/link";
 import axios from "axios";
 import { usePathname, useRouter } from "next/navigation";
+
 import { MoreHorizontal, Pencil, Plus, Trash2, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
 
 import {
   DropdownMenu,
@@ -48,6 +48,7 @@ interface Props {
 }
 
 export default function SidebarContentClient({ conversations }: Props) {
+ 
   const router = useRouter();
   const pathname = usePathname();
 
@@ -58,7 +59,6 @@ export default function SidebarContentClient({ conversations }: Props) {
     useState<Conversation | null>(null);
 
   const [title, setTitle] = useState("");
-
   const [loading, setLoading] = useState(false);
 
   const openRename = (conversation: Conversation) => {
@@ -128,7 +128,7 @@ export default function SidebarContentClient({ conversations }: Props) {
       <div className="space-y-6">
         <Link
           href="/"
-          className="flex items-center gap-2 rounded-lg bg-linear-to-r from-indigo-500 to-violet-700 px-3 py-2 text-white"
+          className="flex items-center justify-center gap-2 rounded-lg bg-linear-to-br from-indigo-500 to-violet-700 px-3 py-2 text-white"
         >
           <Plus className="h-4 w-4" />
           <span>New Chat</span>
@@ -147,7 +147,7 @@ export default function SidebarContentClient({ conversations }: Props) {
                 <div
                   key={conversation.id}
                   className={cn(
-                    "flex items-center justify-between rounded-lg px-3 py-2",
+                    "flex items-center justify-between rounded-lg px-3 py-1",
                     pathname === href
                       ? "bg-slate-800 text-white"
                       : "hover:bg-slate-800/60",
@@ -200,8 +200,6 @@ export default function SidebarContentClient({ conversations }: Props) {
         </div>
       </div>
 
-      {/* Rename Dialog */}
-
       <Dialog open={renameOpen} onOpenChange={setRenameOpen}>
         <DialogContent>
           <DialogHeader>
@@ -224,8 +222,6 @@ export default function SidebarContentClient({ conversations }: Props) {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
-      {/* Delete Dialog */}
 
       <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
         <AlertDialogContent>

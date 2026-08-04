@@ -1,6 +1,5 @@
 import { getConversationById } from "@/actions/get-conversation";
 import Chat from "@/components/chat/chat";
-import MessageList from "@/components/chat/message-list";
 
 interface ConversationPageProps {
   params: Promise<{

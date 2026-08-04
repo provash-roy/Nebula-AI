@@ -1,5 +1,12 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
+import { BookOpen } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Conversation } from "@/types/conversation";
+import SidebarContentClient from "./sidebar-content-client";
+
 import {
   Show,
   UserButton,
@@ -14,12 +21,6 @@ import {
   SidebarFooter,
   SidebarHeader,
 } from "@/components/ui/sidebar";
-
-import { BookOpen } from "lucide-react";
-import SidebarContentClient from "./sidebar-content-client";
-import { Conversation } from "@/types/conversation";
-import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
 
 type AppSidebarClientProps = {
   conversations: Conversation[];
@@ -38,7 +39,7 @@ export default function AppSidebarClient({
   const router = useRouter();
 
   return (
-    <Sidebar className="bg-[#0d0f14] border-white/10 px-4 py-2">
+    <Sidebar className=" border-white/10 px-4 py-2">
       <SidebarHeader className="text-2xl font-semibold">
         <div className="flex items-center gap-4">
           <BookOpen />
@@ -86,7 +87,7 @@ export default function AppSidebarClient({
           <div className="flex items-center justify-between">
             <SignInButton mode="modal">
               <Button
-              size='lg'
+                size="lg"
                 variant="outline"
                 className="rounded border-white/10 text-white hover:bg-white/10"
               >
