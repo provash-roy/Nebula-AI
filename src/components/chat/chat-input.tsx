@@ -14,8 +14,13 @@ export default function ChatInput() {
   const [prompt, setPrompt] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const { conversationId, addMessage, addAssistantMessage, setConversationId } =
-    useChatStore();
+  const {
+    conversationId,
+    addMessage,
+    addAssistantMessage,
+    setConversationId,
+    appendAssistantChunk,
+  } = useChatStore();
 
   const handleSend = async () => {
     const message = prompt.trim();
@@ -25,33 +30,90 @@ export default function ChatInput() {
     try {
       setLoading(true);
 
+      let currentConversationId = conversationId;
+
+      // 1. Create new conversation if not exists
+      if (!currentConversationId) {
+        const res = await fetch("/api/conversations", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!res.ok) {
+          throw new Error("Failed to create conversation");
+        }
+
+        const data = await res.json();
+
+        currentConversationId = data.id;
+
+        setConversationId(data.id);
+
+        router.replace(`/c/${data.id}`);
+      }
+
+      // 2. Add user message instantly
       addMessage({
         id: crypto.randomUUID(),
         role: "USER",
         content: message,
       });
 
+      // 3. Add empty AI message for streaming
       addAssistantMessage();
 
       setPrompt("");
 
-      const res = await axios.post("/api/chat", {
-        prompt: message,
-        conversationId,
+      // 4. Start AI streaming request
+      const response = await fetch("/api/chat", {
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json",
+        },
+
+        body: JSON.stringify({
+          prompt: message,
+          conversationId: currentConversationId,
+        }),
       });
 
-      if (!conversationId) {
-        setConversationId(res.data.conversationId);
+      if (!response.ok) {
+        throw new Error("Chat request failed");
+      }
 
-        router.replace(`/c/${res.data.conversationId}`);
+      // 5. Read stream
+      const reader = response.body?.getReader();
+
+      if (!reader) {
+        throw new Error("No stream available");
+      }
+
+      const decoder = new TextDecoder();
+
+      while (true) {
+        const { done, value } = await reader.read();
+
+        if (done) {
+          break;
+        }
+
+        const chunk = decoder.decode(value, {
+          stream: true,
+        });
+
+        console.log("Received chunk:", chunk);
+        // 6. Update AI message in real time
+        appendAssistantChunk(chunk);
       }
     } catch (error) {
-      console.error(error);
+      console.error("Chat error:", error);
     } finally {
       setLoading(false);
     }
   };
-
   return (
     <footer className="fixed bottom-0 left-0 right-0 md:left-64 z-50 border-zinc-800 bg-[#0d0f14] p-5">
       <div className="mx-auto max-w-4xl">

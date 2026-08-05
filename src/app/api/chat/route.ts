@@ -1,79 +1,175 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-import { graph } from "@/graph/graph";
-import prisma from "@/lib/prisma";
 
-function generateTitle(prompt: string) {
-  return prompt.length > 40 ? prompt.slice(0, 40) + "..." : prompt;
-}
+import prisma from "@/lib/prisma";
+import { graph } from "@/graph/graph";
 
 export async function POST(req: Request) {
   try {
-    const { prompt, conversationId } = await req.json();
+    const body = await req.json();
 
+    const { prompt, conversationId } = body;
+
+    // Clerk authentication
     const { userId } = await auth();
 
     if (!userId) {
-      return new Response("Unauthorized", { status: 401 });
+      return new Response("Unauthorized", {
+        status: 401,
+      });
     }
 
-    if (!prompt) {
+    if (!prompt || !conversationId) {
       return NextResponse.json(
-        { message: "Prompt is required" },
-        { status: 400 },
+        {
+          message: "Prompt and conversationId required",
+        },
+        {
+          status: 400,
+        },
       );
     }
-    let convoId = conversationId;
-    let isNewConversation = false;
 
-    if (!convoId) {
-      const newConversation = await prisma.conversation.create({
-        data: {
-          userId,
-          title: generateTitle(prompt),
+    // Check conversation ownership
+
+    const conversation = await prisma.conversation.findFirst({
+      where: {
+        id: conversationId,
+        userId: userId,
+      },
+    });
+
+    if (!conversation) {
+      return NextResponse.json(
+        {
+          message: "Conversation not found",
         },
-      });
-
-      convoId = newConversation.id;
-      isNewConversation = true;
+        {
+          status: 404,
+        },
+      );
     }
+
+    // Save user message
 
     await prisma.message.create({
       data: {
         content: prompt,
+
         role: "USER",
-        conversationId: convoId,
+
+        conversationId,
       },
     });
 
-    const result = await graph.invoke({
-      prompt,
-      conversationId: convoId,
-    });
+    const encoder = new TextEncoder();
 
-    await prisma.message.create({
-      data: {
-        content: result.aiResponse,
-        role: "AI",
-        conversationId: convoId,
+    const stream = new ReadableStream({
+      async start(controller) {
+        let fullResponse = "";
+
+        try {
+          const result = await graph.stream(
+            {
+              prompt,
+
+              conversationId,
+            },
+
+            {
+              streamMode: "messages",
+            },
+          );
+
+          for await (const [messageChunk, metadata] of result) {
+            const text =
+              typeof messageChunk.content === "string"
+                ? messageChunk.content
+                : "";
+
+            if (text) {
+              console.log("TOKEN:", text);
+
+              fullResponse += text;
+
+              // Send token to frontend
+
+              controller.enqueue(
+                encoder.encode(
+                  `data: ${JSON.stringify({
+                    type: "token",
+                    content: text,
+                  })}\n\n`,
+                ),
+              );
+            }
+          }
+
+          // Save AI complete response
+
+          if (fullResponse) {
+            await prisma.message.create({
+              data: {
+                content: fullResponse,
+
+                role: "AI",
+
+                conversationId,
+              },
+            });
+          }
+
+          controller.enqueue(
+            encoder.encode(
+              `data:${JSON.stringify({
+                type: "done",
+              })}\n\n`,
+            ),
+          );
+
+          controller.close();
+        } catch (error) {
+          console.error("Graph stream error:", error);
+
+          controller.enqueue(
+            encoder.encode(
+              `data:${JSON.stringify({
+                type: "error",
+
+                message: "Something went wrong",
+              })}\n\n`,
+            ),
+          );
+
+          controller.close();
+        }
       },
     });
 
-    return NextResponse.json({
-      success: true,
-      response: result.aiResponse,
-      conversationId: convoId,
-      isNewConversation,
-    });
+    return new Response(
+      stream,
+
+      {
+        headers: {
+          "Content-Type": "text/event-stream",
+
+          "Cache-Control": "no-cache, no-transform",
+
+          Connection: "keep-alive",
+        },
+      },
+    );
   } catch (error) {
     console.error("Chat API Error:", error);
 
     return NextResponse.json(
       {
-        success: false,
-        message: "Failed to process request",
+        message: "Internal Server Error",
       },
-      { status: 500 },
+
+      {
+        status: 500,
+      },
     );
   }
 }
