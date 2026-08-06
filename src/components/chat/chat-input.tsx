@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Mic, Paperclip, Send } from "lucide-react";
 import { Button } from "../ui/button";
-import axios from "axios";
 
 import { useChatStore } from "@/store/useChatStore";
 
@@ -32,13 +31,15 @@ export default function ChatInput() {
 
       let currentConversationId = conversationId;
 
-      // 1. Create new conversation if not exists
       if (!currentConversationId) {
         const res = await fetch("/api/conversations", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
+          body: JSON.stringify({
+            prompt: message,
+          }),
         });
 
         if (!res.ok) {
@@ -54,19 +55,16 @@ export default function ChatInput() {
         router.replace(`/c/${data.id}`);
       }
 
-      // 2. Add user message instantly
       addMessage({
         id: crypto.randomUUID(),
         role: "USER",
         content: message,
       });
 
-      // 3. Add empty AI message for streaming
       addAssistantMessage();
 
       setPrompt("");
 
-      // 4. Start AI streaming request
       const response = await fetch("/api/chat", {
         method: "POST",
 
@@ -84,30 +82,45 @@ export default function ChatInput() {
         throw new Error("Chat request failed");
       }
 
-      // 5. Read stream
       const reader = response.body?.getReader();
 
       if (!reader) {
         throw new Error("No stream available");
       }
 
-      const decoder = new TextDecoder();
+    const decoder = new TextDecoder();
 
-      while (true) {
-        const { done, value } = await reader.read();
+    let buffer = "";
 
-        if (done) {
-          break;
+    while (true) {
+      const { done, value } = await reader.read();
+
+      if (done) break;
+
+      buffer += decoder.decode(value, {
+        stream: true,
+      });
+
+      const events = buffer.split("\n\n");
+
+      buffer = events.pop() || "";
+
+      for (const event of events) {
+        if (!event.startsWith("data:")) continue;
+
+        const json = event.replace("data:", "").trim();
+
+        try {
+          const parsed = JSON.parse(json);
+
+          if (parsed.type === "token") {
+            appendAssistantChunk(parsed.content);
+          }
+        } catch (err) {
+          console.log(err);
         }
-
-        const chunk = decoder.decode(value, {
-          stream: true,
-        });
-
-        console.log("Received chunk:", chunk);
-        // 6. Update AI message in real time
-        appendAssistantChunk(chunk);
       }
+    }
     } catch (error) {
       console.error("Chat error:", error);
     } finally {

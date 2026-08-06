@@ -10,7 +10,7 @@ export async function POST(req: Request) {
 
     const { prompt, conversationId } = body;
 
-    // Clerk authentication
+    
     const { userId } = await auth();
 
     if (!userId) {
@@ -30,7 +30,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // Check conversation ownership
+   
 
     const conversation = await prisma.conversation.findFirst({
       where: {
@@ -50,7 +50,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // Save user message
+
 
     await prisma.message.create({
       data: {
@@ -88,11 +88,9 @@ export async function POST(req: Request) {
                 : "";
 
             if (text) {
-              console.log("TOKEN:", text);
-
+             
               fullResponse += text;
 
-              // Send token to frontend
 
               controller.enqueue(
                 encoder.encode(
@@ -105,7 +103,7 @@ export async function POST(req: Request) {
             }
           }
 
-          // Save AI complete response
+       
 
           if (fullResponse) {
             await prisma.message.create({

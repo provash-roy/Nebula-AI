@@ -3,7 +3,22 @@ import { NextResponse } from "next/server";
 
 import prisma from "@/lib/prisma";
 
-export async function POST() {
+function toTitleCase(str: string) {
+  return str
+    .split(" ")
+    .map((word) => word[0].toUpperCase() + word.slice(1).toLowerCase())
+    .join(" ");
+}
+
+function generateTitle(prompt: string) {
+  return prompt.length > 40
+    ? toTitleCase(prompt.slice(0, 40)) + "..."
+    : toTitleCase(prompt);
+}
+
+export async function POST(request: Request) {
+  const { prompt } = await request.json();
+
   try {
     const { userId } = await auth();
 
@@ -16,7 +31,7 @@ export async function POST() {
     const conversation = await prisma.conversation.create({
       data: {
         userId,
-        title: "New Conversation",
+        title: generateTitle(prompt),
       },
     });
 
