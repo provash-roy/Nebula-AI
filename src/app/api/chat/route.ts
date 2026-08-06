@@ -4,13 +4,14 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { graph } from "@/graph/graph";
 
+const allowedNodes = ["chat", "image", "coding", "image"];
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
 
     const { prompt, conversationId } = body;
 
-    
     const { userId } = await auth();
 
     if (!userId) {
@@ -30,8 +31,6 @@ export async function POST(req: Request) {
       );
     }
 
-   
-
     const conversation = await prisma.conversation.findFirst({
       where: {
         id: conversationId,
@@ -49,8 +48,6 @@ export async function POST(req: Request) {
         },
       );
     }
-
-
 
     await prisma.message.create({
       data: {
@@ -82,15 +79,22 @@ export async function POST(req: Request) {
           );
 
           for await (const [messageChunk, metadata] of result) {
+            if (!allowedNodes.includes(metadata.langgraph_node)) {
+              continue;
+            }
+
             const text =
               typeof messageChunk.content === "string"
                 ? messageChunk.content
                 : "";
 
-            if (text) {
-             
-              fullResponse += text;
+            // empty chunk ignore
+            if (!text.trim()) {
+              continue;
+            }
 
+            if (text) {
+              fullResponse += text;
 
               controller.enqueue(
                 encoder.encode(
@@ -102,8 +106,6 @@ export async function POST(req: Request) {
               );
             }
           }
-
-       
 
           if (fullResponse) {
             await prisma.message.create({
