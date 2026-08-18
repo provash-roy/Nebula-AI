@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Mic, Paperclip, Send } from "lucide-react";
 import { Button } from "../ui/button";
@@ -8,6 +8,7 @@ import { Button } from "../ui/button";
 import { useChatStore } from "@/store/useChatStore";
 
 export default function ChatInput() {
+  const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
   const [prompt, setPrompt] = useState("");
@@ -20,6 +21,21 @@ export default function ChatInput() {
     setConversationId,
     appendAssistantChunk,
   } = useChatStore();
+
+  const handleFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+
+    if (!file) return;
+
+    const form = new FormData();
+
+    form.append("file", file);
+
+    const res = await fetch("/api/ingest", {
+      method: "POST",
+      body: form,
+    });
+  };
 
   const handleSend = async () => {
     const message = prompt.trim();
@@ -88,39 +104,39 @@ export default function ChatInput() {
         throw new Error("No stream available");
       }
 
-    const decoder = new TextDecoder();
+      const decoder = new TextDecoder();
 
-    let buffer = "";
+      let buffer = "";
 
-    while (true) {
-      const { done, value } = await reader.read();
+      while (true) {
+        const { done, value } = await reader.read();
 
-      if (done) break;
+        if (done) break;
 
-      buffer += decoder.decode(value, {
-        stream: true,
-      });
+        buffer += decoder.decode(value, {
+          stream: true,
+        });
 
-      const events = buffer.split("\n\n");
+        const events = buffer.split("\n\n");
 
-      buffer = events.pop() || "";
+        buffer = events.pop() || "";
 
-      for (const event of events) {
-        if (!event.startsWith("data:")) continue;
+        for (const event of events) {
+          if (!event.startsWith("data:")) continue;
 
-        const json = event.replace("data:", "").trim();
+          const json = event.replace("data:", "").trim();
 
-        try {
-          const parsed = JSON.parse(json);
+          try {
+            const parsed = JSON.parse(json);
 
-          if (parsed.type === "token") {
-            appendAssistantChunk(parsed.content);
+            if (parsed.type === "token") {
+              appendAssistantChunk(parsed.content);
+            }
+          } catch (err) {
+            console.log(err);
           }
-        } catch (err) {
-          console.log(err);
         }
       }
-    }
     } catch (error) {
       console.error("Chat error:", error);
     } finally {
@@ -132,10 +148,19 @@ export default function ChatInput() {
       <div className="mx-auto max-w-4xl">
         <div className="flex items-end gap-3 rounded-xl border border-zinc-700 bg-zinc-900 p-3">
           <div className="flex items-center gap-1">
+            <input
+              ref={inputRef}
+              type="file"
+              accept=".pdf"
+              onChange={handleFile}
+              hidden
+            />
+
             <Button
               variant="ghost"
               size="icon"
               className="text-slate-400 hover:text-white"
+              onClick={() => inputRef.current?.click()}
             >
               <Paperclip size={18} />
             </Button>

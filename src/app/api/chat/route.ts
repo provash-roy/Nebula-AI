@@ -88,7 +88,7 @@ export async function POST(req: Request) {
                 ? messageChunk.content
                 : "";
 
-            // empty chunk ignore
+     
             if (!text.trim()) {
               continue;
             }
