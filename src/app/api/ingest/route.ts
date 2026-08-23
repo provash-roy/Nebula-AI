@@ -1,88 +1,63 @@
-import { NextRequest, NextResponse } from "next/server";
-import fs from "fs/promises";
-import path from "path";
-import { PDFLoader } from "langchain/document_loaders/fs/pdf";
+  import { NextRequest, NextResponse } from "next/server";
+  import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
+  import { Document } from "@langchain/core/documents";
+  import { getVectorStore } from "@/lib/ai/qdrant";
+  import fs, { readFile } from "fs/promises";
+  import path from "path";
+  import os from "os";
+  import { PDFParse } from "pdf-parse";
 
-import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
+  export async function POST(req: NextRequest) {
+    const formData = await req.formData();
+    const file = formData.get("file") as File;
 
+    if (!file) {
+      return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
+    }
+    let tempFilePath = "";
 
-export async function POST(req: NextRequest) {
-  const formData = await req.formData();
+    try {
+      const buffer = Buffer.from(await file.arrayBuffer());
 
-  const file = formData.get("file") as File;
-  console.log("file", file);
+      tempFilePath = path.join(os.tmpdir(), file.name);
 
-  if (!file) {
-    return NextResponse.json({ error: "No file" }, { status: 400 });
+      await fs.writeFile(tempFilePath, buffer);
+      const buffer1 = await readFile(tempFilePath);
+
+      const parser = new PDFParse({ data: buffer1 });
+
+      const result = await parser.getText();
+      console.log("PDF text extracted:", result.text);
+
+      // const docs = [
+      //   new Document({
+      //     pageContent: result.text,
+      //     metadata: {
+      //       fileName: file.name,
+      //     },
+      //   }),
+      // ];
+
+      // const splitter = new RecursiveCharacterTextSplitter({
+      //   chunkSize: 500,
+      //   chunkOverlap: 50,
+      // });
+
+      // const chunks = await splitter.splitDocuments(docs);
+
+      // const vectorStore = await getVectorStore();
+      // await vectorStore.addDocuments(chunks);
+
+      return NextResponse.json({
+        success: true,
+        // chunks: chunks.length,
+      });
+    } catch (err) {
+      console.error(err);
+
+      return NextResponse.json(
+        { error: "PDF processing failed" },
+        { status: 500 },
+      );
+    }
   }
-
-  const bytes = await file.arrayBuffer();
-
-  const buffer = Buffer.from(bytes);
-
-  const tempDir = path.join(process.cwd(), "temp");
-
-  await fs.mkdir(tempDir, { recursive: true });
-
-  const filePath = path.join(tempDir, `${Date.now()}-${file.name}`);
-
-  await fs.writeFile(filePath, buffer);
-
-
-// const data = await fs.readFile(filePath);
-// const result = await pdf(data);
-
-  const loader = new PDFLoader(filePath);
-
-    const docs = await loader.load();
-
-    const splitter = new RecursiveCharacterTextSplitter({
-      chunkSize: 500,
-      chunkOverlap: 5,
-    });
-
-    const chunks = await splitter.splitDocuments(docs);
-
-
-
-  return NextResponse.json({ message: "File received" });
-}
-
-
-
-    
-
-  
-
-    
-
-    const embeddings = new GoogleGenerativeAIEmbeddings({
-      model: "gemini-embedding-001", // 768 dimensions
-      taskType: TaskType.RETRIEVAL_DOCUMENT,
-      title: "Document title",
-    });
-
-    await QdrantVectorStore.fromDocuments(chunks, embeddings, {
-      url: process.env.QDRANT_URL!,
-      apiKey: process.env.QDRANT_API_KEY!,
-      collectionName: "medibot-ai",
-    });
-
-    return NextResponse.json({
-      success: true,
-      pages: docs.length,
-      chunks: chunks.length,
-    });
-  } catch (error) {
-    console.log(error);
-
-    return NextResponse.json(
-      {
-        success: false,
-      },
-      {
-        status: 500,
-      },
-    );
-  }
-
