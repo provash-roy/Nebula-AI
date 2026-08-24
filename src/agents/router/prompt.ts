@@ -69,5 +69,5 @@ Output:
 chat
 
 Return only:
-chat | search | coding | image
+chat | search | coding | image|rag
 `;

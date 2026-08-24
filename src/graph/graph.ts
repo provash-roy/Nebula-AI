@@ -1,6 +1,7 @@
 import { chatAgent } from "@/agents/chat/chat-agent";
 import { codingAgent } from "@/agents/coding/coding-agent";
 import { imageAgent } from "@/agents/image/image-agent";
+import { ragAgent } from "@/agents/rag/rag-agent";
 import { routerAgent } from "@/agents/router/router-agent";
 import { searchAgent } from "@/agents/search/search-agent";
 import { agentState } from "@/agents/shared/state";
@@ -12,6 +13,7 @@ const agent = new StateGraph(agentState)
   .addNode("search", searchAgent)
   .addNode("coding", codingAgent)
   .addNode("image", imageAgent)
+  .addNode("rag", ragAgent)
   .addEdge("__start__", "router")
   .addConditionalEdges(
     "router",
@@ -32,18 +34,24 @@ const agent = new StateGraph(agentState)
         return "image";
       }
 
+      if (state.agent === "rag") {
+        return "rag";
+      }
+
       return "chat";
     },
     {
       chat: "chat",
       coding: "coding",
       search: "search",
+      rag: "rag",
       image: "image",
     },
   )
   .addEdge("search", "chat")
   .addEdge("chat", "__end__")
   .addEdge("coding", "__end__")
+  .addEdge("rag", "__end__")
   .addEdge("image", "__end__");
 
 export const graph = agent.compile();

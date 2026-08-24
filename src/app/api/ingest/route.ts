@@ -29,28 +29,28 @@
       const result = await parser.getText();
       console.log("PDF text extracted:", result.text);
 
-      // const docs = [
-      //   new Document({
-      //     pageContent: result.text,
-      //     metadata: {
-      //       fileName: file.name,
-      //     },
-      //   }),
-      // ];
+      const docs = [
+        new Document({
+          pageContent: result.text,
+          metadata: {
+            fileName: file.name,
+          },
+        }),
+      ];
 
-      // const splitter = new RecursiveCharacterTextSplitter({
-      //   chunkSize: 500,
-      //   chunkOverlap: 50,
-      // });
+      const splitter = new RecursiveCharacterTextSplitter({
+        chunkSize: 200,
+        chunkOverlap: 50,
+      });
 
-      // const chunks = await splitter.splitDocuments(docs);
+      const chunks = await splitter.splitDocuments(docs);
 
-      // const vectorStore = await getVectorStore();
-      // await vectorStore.addDocuments(chunks);
+      const vectorStore = await getVectorStore();
+      await vectorStore.addDocuments(chunks);
 
       return NextResponse.json({
         success: true,
-        // chunks: chunks.length,
+        chunks: chunks.length,
       });
     } catch (err) {
       console.error(err);

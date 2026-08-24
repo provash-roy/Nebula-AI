@@ -5,7 +5,7 @@ export const agentState = Annotation.Root({
 
   conversationId: Annotation<string>(),
 
-  agent: Annotation<"chat" | "search" | "coding" | "image">(),
+  agent: Annotation<"chat" | "search" | "coding" | "image" | "rag">(),
 
   aiResponse: Annotation<string>(),
 });
