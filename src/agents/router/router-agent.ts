@@ -18,8 +18,9 @@ export const routerAgent = async (state: AgentState) => {
 
   return {
     ...state,
-    agent:
-      typeof response.content === "string"
+    agent: state.useRag
+      ? "rag"
+      : typeof response.content === "string"
         ? response.content.trim().toLowerCase()
         : response.content,
   };

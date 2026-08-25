@@ -34,6 +34,11 @@ Available agents:
 - Requests to create visual content
 - Design or illustration requests
 
+5. rag:
+- Questions about an uploaded PDF or document
+- Requests to summarize, explain, find, or extract information from a file
+- Questions that explicitly mention a PDF, document, uploaded file, or its contents
+
 
 Rules:
 - Choose ONLY ONE agent.
@@ -64,10 +69,20 @@ Output:
 chat
 
 User:
+"What does the uploaded PDF say about authentication?"
+Output:
+rag
+
+User:
+"Summarize this document"
+Output:
+rag
+
+User:
 "How are you?"
 Output:
 chat
 
 Return only:
-chat | search | coding | image|rag
+chat | search | coding | image | rag
 `;

@@ -4,13 +4,13 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { graph } from "@/graph/graph";
 
-const allowedNodes = ["chat", "image", "coding", "image"];
+const allowedNodes = ["chat", "image", "coding", "image", "rag"];
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
 
-    const { prompt, conversationId } = body;
+    const { prompt, conversationId, useRag = false } = body;
 
     const { userId } = await auth();
 
@@ -71,6 +71,8 @@ export async function POST(req: Request) {
               prompt,
 
               conversationId,
+
+              useRag,
             },
 
             {
@@ -88,7 +90,6 @@ export async function POST(req: Request) {
                 ? messageChunk.content
                 : "";
 
-     
             if (!text.trim()) {
               continue;
             }
